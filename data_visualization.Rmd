@@ -86,3 +86,89 @@ weather_df %>%
   facet_grid(. ~ name)
 ```
 
+Combine some elements, new plot 
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point(aes(size = prcp), alpha = 0.5) +
+  geom_smooth(se = FALSE)+
+  facet_grid(. ~ name)
+```
+
+## Small notes 
+
+How many geoms have to exist?
+
+Whatever geoms you want
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name))+
+  geom_smooth(se = FALSE)
+```
+
+A neat geom!
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax))+
+  geom_density2d()+
+  geom_point(alpha = 0.3)
+```
+
+## Univariate plots 
+
+Histograms 
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+Can you add color?
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_histogram() + 
+  facet_grid(. ~ name)
+```
+
+Let's try a new geom
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = 0.4)
+```
+
+What about box plots?
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y = tmin))+
+  geom_boxplot()
+```
+
+Trendy plots 
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y = tmin, fill = name)) + 
+  geom_violin(alpha = 0.5)+
+  stat_summary(fun = "median")
+```
+
+
+Ridge plot 
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = name))+
+  geom_density_ridges()
+```
+
+
+
