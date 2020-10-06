@@ -1,19 +1,15 @@
 ---
-title: "Visualization"
-subtitle: "Part 1"
+title: "Visualization, Part 2"
 output: github_document
 ---
 
 ```{r}
 library(tidyverse)
-library(ggridges)
+library(patchwork)
 ```
 
 ## Load the weather data
 
-rnoaa lets you access public data online; telling R we want data from these three weather stations. 
-
-Mutate to rename variables for weather station.
 
 ```{r}
 weather_df = 
@@ -33,165 +29,65 @@ weather_df =
   select(name, id, everything())
 ```
 
-## Scatterplot 
-
-```{r}
-ggplot(weather_df, aes(x = tmin, y = tmax)) +
-  geom_point()
-```
-
-New approach, same plot 
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = tmin, y = tmax))+
-  geom_point()
-```
-
-Save and edit plot object 
-
-```{r}
-weather_plot = 
-  weather_df %>% 
-  ggplot(aes(x = tmin, y = tmax))
-
-weather_plot + geom_point()
-```
-
-## Advnaced scatter plot 
+Revisit plot for part 1 of session.
 
 ```{r}
 weather_df %>% 
   ggplot(aes(x = tmin, y = tmax, color = name)) + 
-  geom_point() + 
-  geom_smooth(se = FALSE)
+  geom_point(alpha = .5)
 ```
 
-What about the `aes` placement?
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = tmin, y = tmax)) + 
-  geom_point(aes(color = name)) +
-  geom_smooth()
-```
-
-Let's facet some things 
+## Labels
 
 ```{r}
 weather_df %>% 
   ggplot(aes(x = tmin, y = tmax, color = name)) + 
-  geom_point(alpha = 0.2) + 
-  geom_smooth(se = FALSE) +
-  facet_grid(. ~ name)
+  geom_point(alpha = .5) + 
+  labs(
+  title = "Temp Plot",
+  x = "Min Temp",
+  y = "Max Temp",
+  caption = "data from rnoaa package 2017"
+  )
 ```
 
-Combine some elements, new plot 
+## Scales 
+
+X and Y scales 
 
 ```{r}
 weather_df %>% 
-  ggplot(aes(x = date, y = tmax, color = name)) +
-  geom_point(aes(size = prcp), alpha = 0.5) +
-  geom_smooth(se = FALSE)+
-  facet_grid(. ~ name)
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) + 
+  labs(
+  title = "Temp Plot",
+  x = "Min Temp",
+  y = "Max Temp",
+  caption = "data from rnoaa package 2017"
+  ) +
+  scale_x_continuous(
+    breaks = c(-15, 0, 15),
+    labels = c("-15 C", "0", "15 C")
+  ) +
+  scale_y_continuous(
+    position = "right"
+  )
 ```
 
-## Small notes 
-
-How many geoms have to exist?
-
-Whatever geoms you want
+Color scales 
 
 ```{r}
 weather_df %>% 
-  ggplot(aes(x = tmin, y = tmax, color = name))+
-  geom_smooth(se = FALSE)
-```
-
-A neat geom!
-
-```{r}
-weather_df %>%
-  ggplot(aes(x = tmin, y = tmax))+
-  geom_density2d()+
-  geom_point(alpha = 0.3)
-```
-
-## Univariate plots 
-
-Histograms 
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = tmin)) +
-  geom_histogram()
-```
-
-Can you add color?
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = tmin)) +
-  geom_histogram() + 
-  facet_grid(. ~ name)
-```
-
-Let's try a new geom
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = tmin, fill = name)) +
-  geom_density(alpha = 0.4)
-```
-
-What about box plots?
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = name, y = tmin))+
-  geom_boxplot()
-```
-
-Trendy plots 
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = name, y = tmin, fill = name)) + 
-  geom_violin(alpha = 0.5)+
-  stat_summary(fun = "median")
-```
-
-
-Ridge plot 
-
-```{r}
-weather_df %>% 
-  ggplot(aes(x = tmin, y = name))+
-  geom_density_ridges()
-```
-
-## save and embed plots 
-
-Save a scatter plot 
-
-```{r}
-weather_plot =
-  weather_df %>% 
-    ggplot(aes(x = tmin, y = tmax, color = name))+
-    geom_point(alpha = 0.5)
-
-ggsave("weather_plot.pdf", weather_plot, width = 8, height = 5)
-```
-
-What about embedding 
-
-```{r}
-weather_plot
-```
-
-Embed at different size
-
-```{r, fig.width=12, fig.height=6}
-weather_plot
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) + 
+  labs(
+  title = "Temp Plot",
+  x = "Min Temp",
+  y = "Max Temp",
+  caption = "data from rnoaa package 2017"
+  ) +
+  viridis::scale_color_viridis(
+    name = "location",
+        discrete = TRUE)
 ```
 
