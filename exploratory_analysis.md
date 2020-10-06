@@ -9,14 +9,14 @@ Add - extracting month var
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ------------------
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
     ## v tibble  3.0.3     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts ------------------------------------------------------------------------ tidyverse_conflicts() --
+    ## -- Conflicts -- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -169,3 +169,78 @@ weather_df %>%
 ``` r
 #This result is NOT a data frame, can't use in subsequent analysis
 ```
+
+other helpful counters:
+
+``` r
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(
+    n_obs = n(), 
+    n_days = n_distinct(date)
+    )
+```
+
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+
+    ## # A tibble: 12 x 3
+    ##    month      n_obs n_days
+    ##    <date>     <int>  <int>
+    ##  1 2017-01-01    93     31
+    ##  2 2017-02-01    84     28
+    ##  3 2017-03-01    93     31
+    ##  4 2017-04-01    90     30
+    ##  5 2017-05-01    93     31
+    ##  6 2017-06-01    90     30
+    ##  7 2017-07-01    93     31
+    ##  8 2017-08-01    93     31
+    ##  9 2017-09-01    90     30
+    ## 10 2017-10-01    93     31
+    ## 11 2017-11-01    90     30
+    ## 12 2017-12-01    93     31
+
+## Digression on 2x2 Tables
+
+1)create something with 2x2 levels
+
+``` r
+weather_df %>% 
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold", 
+      tmax >= 5 ~ "not_cold", 
+      TRUE ~ ""
+    )
+  ) %>% 
+  group_by(name, cold) %>% 
+  summarize(count = n())
+```
+
+    ## `summarise()` regrouping output by 'name' (override with `.groups` argument)
+
+    ## # A tibble: 4 x 3
+    ## # Groups:   name [2]
+    ##   name           cold     count
+    ##   <chr>          <chr>    <int>
+    ## 1 CentralPark_NY cold        44
+    ## 2 CentralPark_NY not_cold   321
+    ## 3 Waterhole_WA   cold       172
+    ## 4 Waterhole_WA   not_cold   193
+
+``` r
+weather_df %>% 
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold", 
+      tmax >= 5 ~ "not_cold", 
+      TRUE ~ ""
+    )
+  ) %>% 
+  janitor::tabyl(name, cold)
+```
+
+    ##            name cold not_cold
+    ##  CentralPark_NY   44      321
+    ##    Waterhole_WA  172      193

@@ -80,3 +80,50 @@ weather_df %>%
 #This result is NOT a data frame, can't use in subsequent analysis
 ```
 
+other helpful counters: 
+
+```{r}
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(
+    n_obs = n(), 
+    n_days = n_distinct(date)
+    )
+```
+
+## Digression on 2x2 Tables 
+
+1)create something with 2x2 levels
+
+```{r}
+weather_df %>% 
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold", 
+      tmax >= 5 ~ "not_cold", 
+      TRUE ~ ""
+    )
+  ) %>% 
+  group_by(name, cold) %>% 
+  summarize(count = n())
+
+```
+
+```{r}
+weather_df %>% 
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold", 
+      tmax >= 5 ~ "not_cold", 
+      TRUE ~ ""
+    )
+  ) %>% 
+  janitor::tabyl(name, cold)
+```
+
+
+
+
+
