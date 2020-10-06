@@ -211,3 +211,8 @@ weather_df %>%
   )
 ```
 
+## quick note
+
+summarize only gets you so far
+
+good for single var
