@@ -5,14 +5,14 @@ Visualization, Part 2
 library(tidyverse)
 ```
 
-    ## -- Attaching packages -------------------
+    ## -- Attaching packages ------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
     ## v tibble  3.0.3     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts --- tidyverse_conflicts() --
+    ## -- Conflicts ---------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -139,3 +139,71 @@ weather_df %>%
     ## Warning: Removed 15 rows containing missing values (geom_point).
 
 ![](ggplot_part2_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Themes
+
+Shift the legend
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) + 
+  labs(
+  title = "Temp Plot",
+  x = "Min Temp",
+  y = "Max Temp",
+  caption = "data from rnoaa package 2017"
+  ) +
+  viridis::scale_color_viridis(
+    name = "location",
+        discrete = TRUE) +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](ggplot_part2_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+Change overall theme
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) + 
+  labs(
+  title = "Temp Plot",
+  x = "Min Temp",
+  y = "Max Temp",
+  caption = "data from rnoaa package 2017"
+  ) +
+  viridis::scale_color_viridis(
+    name = "location",
+        discrete = TRUE) + 
+  theme_minimal()
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](ggplot_part2_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+## Setting options
+
+``` r
+library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = 0.6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_color_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
