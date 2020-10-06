@@ -189,6 +189,8 @@ What about embedding
 weather_plot
 ```
 
+Embed at different size
+
 ```{r, fig.width=12, fig.height=6}
 weather_plot
 ```
