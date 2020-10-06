@@ -5,14 +5,14 @@ Visualization, Part 2
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ------------------ tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
     ## v tibble  3.0.3     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts ---------------------------- tidyverse_conflicts() --
+    ## -- Conflicts --------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -207,3 +207,74 @@ options(
 scale_color_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
+
+## Data args in `geom`
+
+``` r
+central_park = 
+    weather_df %>% 
+  filter(name == "CentralPark_NY")
+
+waik = 
+  weather_df %>% 
+  filter(name == "Waikiki_HA")
+
+ggplot(data = waik, aes(x = date, y = tmax, color = name))+
+  geom_point()+
+  geom_line(data = central_park)
+```
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](ggplot_part2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+## Patchwork
+
+Remember faceting?
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = 0.5) +
+  facet_grid(. ~ name)
+```
+
+    ## Warning: Removed 15 rows containing non-finite values (stat_density).
+
+![](ggplot_part2_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+what happens when you want multipanel plots but can’t facet?
+
+``` r
+tmax_tmin_plot =
+  weather_df %>% 
+    ggplot(aes(x = tmin, y = tmax, color = name)) +
+    geom_point(alpha = 0.5) +
+    theme(legend.position = "none")
+
+prcp_dens_plot = 
+  weather_df %>% 
+  filter(prcp > 0) %>% 
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 0.5)+
+  theme(legend.position = "none")
+
+tmax_dates_plot = 
+  weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point() + 
+  geom_smooth(se = FALSE) +
+  theme(legend.position = "none")
+
+(tmax_tmin_plot + prcp_dens_plot) / tmax_dates_plot
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](ggplot_part2_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
